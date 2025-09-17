@@ -1,5 +1,8 @@
 import { pool } from "./db.js";
 import { redis } from "./redis.js";
+import { faker } from "@faker-js/faker";
+
+const USER_COUNT = parseInt(process.env.USER_COUNT, 10) || 10000;
 
 async function seed() {
   await pool.query(`
@@ -9,10 +12,11 @@ async function seed() {
     )
   `);
 
-  console.log("Seeding users...");
+  console.log(`Seeding ${USER_COUNT} users...`);
   const batch = [];
-  for (let i = 0; i < 10000; i++) {  // use 10k for demo (not 100k for free tier)
-    batch.push(`('user_${i}')`);
+  for (let i = 0; i < USER_COUNT; i++) {
+    const username = faker.internet.userName().replace(/'/g, ""); // remove single quotes for SQL safety
+    batch.push(`('${username}')`);
   }
   await pool.query(`INSERT INTO users (username) VALUES ${batch.join(",")} ON CONFLICT DO NOTHING`);
 
