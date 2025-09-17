@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "seed": "node src/seed.js"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/w0lfraz0r/username-backend.git"
