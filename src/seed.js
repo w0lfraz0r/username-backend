@@ -24,7 +24,6 @@ async function seed() {
   const exist = redis.call("EXISTS", "usernames");
   if (exist === 1) {
     console.log("Bloom filter already exists. Skipping creation.");
-    process.exit(0);
   }else {
     console.log("Creating bloom filter...");
     await redis.call("BF.RESERVE", "usernames", "0.01", "1000000");
