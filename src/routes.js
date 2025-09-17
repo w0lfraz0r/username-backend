@@ -7,6 +7,7 @@ const router = express.Router();
 // 1. Get total users
 router.get("/count", async (req, res) => {
   try {
+    res.set("Cache-Control", "no-store");
     let count = await redis.get("user_count");
     if (!count) {
       const result = await pool.query("SELECT COUNT(*) FROM users");
