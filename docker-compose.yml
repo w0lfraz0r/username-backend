@@ -10,8 +10,9 @@ services:
       POSTGRES_DB: usersdb
     ports:
       - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    # Removed named volume to start fresh every time
+    # volumes:
+    #   - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redislabs/rebloom:latest
@@ -19,6 +20,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    # ephemeral, no volume → bloom filter is fresh every start
 
   backend:
     build: .
@@ -33,5 +35,6 @@ services:
       - redis
     command: sh -c "node src/seed.js && node src/index.js"
 
-volumes:
-  pgdata:
+# no named volumes needed
+# volumes:
+#   pgdata:
