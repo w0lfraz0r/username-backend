@@ -15,7 +15,7 @@ async function seed() {
   console.log(`Seeding ${USER_COUNT} users...`);
   const batch = [];
   for (let i = 0; i < USER_COUNT; i++) {
-    const username = faker.internet.userName().replace(/'/g, ""); // remove single quotes for SQL safety
+    const username = faker.internet.username().replace(/'/g, ""); // remove single quotes for SQL safety
     batch.push(`('${username}')`);
   }
   await pool.query(`INSERT INTO users (username) VALUES ${batch.join(",")} ON CONFLICT DO NOTHING`);
