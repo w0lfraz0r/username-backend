@@ -1,6 +1,6 @@
 import { pool } from "./db.js";
 import { redis } from "./redis.js";
-import { faker } from "@faker-js/faker";
+import { el, faker } from "@faker-js/faker";
 
 const USER_COUNT = parseInt(process.env.USER_COUNT, 10) || 10000;
 
@@ -21,7 +21,14 @@ async function seed() {
   await pool.query(`INSERT INTO users (username) VALUES ${batch.join(",")} ON CONFLICT DO NOTHING`);
 
   // create bloom filter
-  await redis.call("BF.RESERVE", "usernames", "0.01", "1000000");
+  const exist = redis.call("EXISTS", "usernames");
+  if (exist === 1) {
+    console.log("Bloom filter already exists. Skipping creation.");
+    process.exit(0);
+  }else {
+    console.log("Creating bloom filter...");
+    await redis.call("BF.RESERVE", "usernames", "0.01", "1000000");
+  }
 
   // preload bloom filter
   const result = await pool.query("SELECT username FROM users");
